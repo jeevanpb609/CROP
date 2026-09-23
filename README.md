@@ -57,14 +57,14 @@ graph TD
 
 ## Layer 3 Rule Plane (`gateway/rules.yaml`, hot-swappable)
 
-| ID  | Rule                                                                            | Weight    |
-| --- | ------------------------------------------------------------------------------- | --------- | ------------------------------------------ | --- |
-| R1  | Cross-sensor conflict: rain > 10 mm/h ∧ moisture < 20 % (physically impossible) | 100       |
-| R2  | Range plausibility: moisture/rain/temp outside physical bounds                  | 70        |
-| R3  | Rate-of-change:                                                                 | Δmoisture | > 5 % / 60 s without rain/irrigation cause | 50  |
-| R4  | Command–effect: valve OPEN ≥ 300 s with < 1 % moisture response                 | 40        |
-| R5  | Stuck/replay: zero variance over 8 readings while environment dynamic           | 30        |
-| R6  | Corroboration: rain > 10 ∧ moisture > 50 (sensors agree)                        | +10       |
+| ID  | Rule                                                                              | Weight |
+| --- | --------------------------------------------------------------------------------- | ------ |
+| R1  | Cross-sensor conflict: rain > 10 mm/h AND moisture < 20 % (physically impossible) | 100    |
+| R2  | Range plausibility: moisture / rain / temp outside physical bounds                | 70     |
+| R3  | Rate-of-change: abs(Δmoisture) > 5 % per 60 s without rain or irrigation cause    | 50     |
+| R4  | Command–effect: valve OPEN ≥ 300 s with < 1 % moisture response                   | 40     |
+| R5  | Stuck/replay: zero variance over 8 readings while environment dynamic             | 30     |
+| R6  | Corroboration: rain > 10 AND moisture > 50 (sensors agree)                        | +10    |
 
 `trust = clamp(100 − Σpenalties + Σbonuses, 0, 100)` → **≤40 SPOOFED** (valve auto-CLOSED) · **41–70 DEGRADED** (actuation held) · **≥71 TRUSTED**.
 Thresholds live in YAML and are mounted read-only: operators retune them with `docker compose restart`, **no rebuild**.
