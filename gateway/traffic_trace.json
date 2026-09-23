@@ -1,0 +1,461 @@
+{
+ "provenance": {
+  "dataset": "Edge-IIoTset (Ferrag et al., 2022)",
+  "citation": "M. A. Ferrag, O. Friha, D. Hamouda, L. Maglaras, H. Janicke, 'Edge-IIoTset: A New Comprehensive Realistic Cyber Security Dataset of IoT and IIoT Applications for Centralized and Federated Learning', TechRxiv, 2022, doi:10.36227/techrxiv.18857336.v1",
+  "source_url": "https://www.kaggle.com/datasets/mohamedamineferrag/edgeiiotset-cyber-security-dataset-of-iot-iiot",
+  "files": [
+   {
+    "file": "Soil_Moisture.csv",
+    "role": "NORMAL baseline",
+    "bytes": 381588722,
+    "delimiter": "COMMA",
+    "header_cols": 63,
+    "row_len_probe": {
+     "63": 500
+    },
+    "shift": 0,
+    "mode": "ts",
+    "ts_parse_rate_pct": 100.0,
+    "delta_col_index": null,
+    "raw_ts_samples": [
+     " 2022 08:46:13.592934000 ",
+     " 2022 08:46:13.593201000 ",
+     " 2022 08:46:13.593261000 "
+    ],
+    "rows": 1192777,
+    "parsed": 1192777,
+    "skipped": 0,
+    "span_rel_s": [
+     0,
+     8182
+    ],
+    "pps_max": 637,
+    "pps_mean": 170.62
+   },
+   {
+    "file": "DDoS_UDP_Flood_attack.pcap",
+    "role": "ATTACK flood (pcap timestamps)",
+    "bytes": 247560012,
+    "mode": "pcap",
+    "rows": 3215732,
+    "parsed": 3215732,
+    "skipped": 0,
+    "span_rel_s": [
+     0,
+     401
+    ],
+    "pps_max": 17863,
+    "pps_mean": 8019.28
+   }
+  ],
+  "attack_csv_timing_defect": "Attack CSVs ship frame.time=spoofed source IPs and udp.time_delta=0.0 (each flood packet opens a new UDP stream); attack timing is therefore taken from pcap record timestamps.",
+  "builder": "tools/build_pps_trace.py v1.2",
+  "generated_at": "2026-09-23T15:28:10",
+  "note": "Per-second packet rates derived OFFLINE from raw captures; the gateway REPLAYS this trace. Not live packet capture."
+ },
+ "threshold_pps": 500,
+ "sustained_windows": 3,
+ "loop": true,
+ "sequence": [
+  {
+   "pps": 273,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 574,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 172,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 176,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 177,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 168,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 178,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 171,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 166,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 175,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 167,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 176,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 171,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 173,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 174,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 169,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 175,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 176,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 178,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 171,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 174,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 174,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 175,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 175,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 167,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 180,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 180,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 169,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 175,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 173,
+   "label": "Normal",
+   "segment": "normal-pre"
+  },
+  {
+   "pps": 9415,
+   "label": "DDoS_UDP",
+   "segment": "attack"
+  },
+  {
+   "pps": 10127,
+   "label": "DDoS_UDP",
+   "segment": "attack"
+  },
+  {
+   "pps": 16774,
+   "label": "DDoS_UDP",
+   "segment": "attack"
+  },
+  {
+   "pps": 15908,
+   "label": "DDoS_UDP",
+   "segment": "attack"
+  },
+  {
+   "pps": 16404,
+   "label": "DDoS_UDP",
+   "segment": "attack"
+  },
+  {
+   "pps": 16268,
+   "label": "DDoS_UDP",
+   "segment": "attack"
+  },
+  {
+   "pps": 16470,
+   "label": "DDoS_UDP",
+   "segment": "attack"
+  },
+  {
+   "pps": 15772,
+   "label": "DDoS_UDP",
+   "segment": "attack"
+  },
+  {
+   "pps": 16566,
+   "label": "DDoS_UDP",
+   "segment": "attack"
+  },
+  {
+   "pps": 17265,
+   "label": "DDoS_UDP",
+   "segment": "attack"
+  },
+  {
+   "pps": 17282,
+   "label": "DDoS_UDP",
+   "segment": "attack"
+  },
+  {
+   "pps": 16668,
+   "label": "DDoS_UDP",
+   "segment": "attack"
+  },
+  {
+   "pps": 15815,
+   "label": "DDoS_UDP",
+   "segment": "attack"
+  },
+  {
+   "pps": 17863,
+   "label": "DDoS_UDP",
+   "segment": "attack"
+  },
+  {
+   "pps": 16709,
+   "label": "DDoS_UDP",
+   "segment": "attack"
+  },
+  {
+   "pps": 15912,
+   "label": "DDoS_UDP",
+   "segment": "attack"
+  },
+  {
+   "pps": 16726,
+   "label": "DDoS_UDP",
+   "segment": "attack"
+  },
+  {
+   "pps": 16207,
+   "label": "DDoS_UDP",
+   "segment": "attack"
+  },
+  {
+   "pps": 13033,
+   "label": "DDoS_UDP",
+   "segment": "attack"
+  },
+  {
+   "pps": 14954,
+   "label": "DDoS_UDP",
+   "segment": "attack"
+  },
+  {
+   "pps": 273,
+   "label": "Normal",
+   "segment": "normal-post"
+  },
+  {
+   "pps": 574,
+   "label": "Normal",
+   "segment": "normal-post"
+  },
+  {
+   "pps": 172,
+   "label": "Normal",
+   "segment": "normal-post"
+  },
+  {
+   "pps": 176,
+   "label": "Normal",
+   "segment": "normal-post"
+  },
+  {
+   "pps": 177,
+   "label": "Normal",
+   "segment": "normal-post"
+  },
+  {
+   "pps": 168,
+   "label": "Normal",
+   "segment": "normal-post"
+  },
+  {
+   "pps": 178,
+   "label": "Normal",
+   "segment": "normal-post"
+  },
+  {
+   "pps": 171,
+   "label": "Normal",
+   "segment": "normal-post"
+  },
+  {
+   "pps": 166,
+   "label": "Normal",
+   "segment": "normal-post"
+  },
+  {
+   "pps": 175,
+   "label": "Normal",
+   "segment": "normal-post"
+  },
+  {
+   "pps": 167,
+   "label": "Normal",
+   "segment": "normal-post"
+  },
+  {
+   "pps": 176,
+   "label": "Normal",
+   "segment": "normal-post"
+  },
+  {
+   "pps": 171,
+   "label": "Normal",
+   "segment": "normal-post"
+  },
+  {
+   "pps": 173,
+   "label": "Normal",
+   "segment": "normal-post"
+  },
+  {
+   "pps": 174,
+   "label": "Normal",
+   "segment": "normal-post"
+  },
+  {
+   "pps": 169,
+   "label": "Normal",
+   "segment": "normal-post"
+  },
+  {
+   "pps": 175,
+   "label": "Normal",
+   "segment": "normal-post"
+  },
+  {
+   "pps": 176,
+   "label": "Normal",
+   "segment": "normal-post"
+  },
+  {
+   "pps": 178,
+   "label": "Normal",
+   "segment": "normal-post"
+  },
+  {
+   "pps": 171,
+   "label": "Normal",
+   "segment": "normal-post"
+  },
+  {
+   "pps": 174,
+   "label": "Normal",
+   "segment": "normal-post"
+  },
+  {
+   "pps": 174,
+   "label": "Normal",
+   "segment": "normal-post"
+  },
+  {
+   "pps": 175,
+   "label": "Normal",
+   "segment": "normal-post"
+  },
+  {
+   "pps": 175,
+   "label": "Normal",
+   "segment": "normal-post"
+  },
+  {
+   "pps": 167,
+   "label": "Normal",
+   "segment": "normal-post"
+  },
+  {
+   "pps": 180,
+   "label": "Normal",
+   "segment": "normal-post"
+  },
+  {
+   "pps": 180,
+   "label": "Normal",
+   "segment": "normal-post"
+  },
+  {
+   "pps": 169,
+   "label": "Normal",
+   "segment": "normal-post"
+  },
+  {
+   "pps": 175,
+   "label": "Normal",
+   "segment": "normal-post"
+  },
+  {
+   "pps": 173,
+   "label": "Normal",
+   "segment": "normal-post"
+  }
+ ]
+}

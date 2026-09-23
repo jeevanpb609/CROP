@@ -1,0 +1,74 @@
+# CROP Layer 3 — declarative rule set (v2.4.0)
+# Edit thresholds/weights here; no Python changes and no image rebuild needed
+# (this file is mounted read-only into the gateway container).
+# weight > 0 = penalty when fired; weight < 0 = trust bonus.
+# New sensor pair  = new entry reusing an existing `type`.
+# New rule TYPE    = register a handler in integrity_engine.HANDLERS.
+
+engine:
+  spoofed_at_or_below: 40 # trust <= 40 -> SPOOFED (actuator auto-blocked)
+  degraded_at_or_below: 70 # trust <= 70 -> DEGRADED (actuation held)
+  history_max: 512 # bounded temporal memory (enables R3/R4/R5)
+
+rules:
+  - id: R1
+    type: cross_sensor_conflict
+    weight: 100
+    description: >-
+      Rainfall > 10 mm/hr while soil moisture < 20%: precipitation without
+      soil wetting is physically impossible (conclusive FDIA evidence).
+    params:
+      rain_gt: 10.0
+      moisture_lt: 20.0
+
+  - id: R2
+    type: range_plausibility
+    weight: 70
+    description: >-
+      Readings outside physical sensor bounds (moisture 0-100%,
+      rain 0-300 mm/hr, temp -20..60 C): faulty or spoofed transmitter.
+    params:
+      moisture: [0.0, 100.0]
+      rain: [0.0, 300.0]
+      temp: [-20.0, 60.0]
+
+  - id: R3
+    type: rate_of_change
+    weight: 50
+    description: >-
+      Soil moisture change > 5% within 60 s without rain onset or irrigation
+      command (infiltration physics violated).
+    params:
+      window_s: 60.0
+      max_pct_per_window: 5.0
+      rain_onset_gt: 10.0
+
+  - id: R4
+    type: command_effect
+    weight: 40
+    description: >-
+      Valve commanded OPEN for >= 300 s with < 1% moisture response:
+      actuator fault or spoofed feedback loop.
+    params:
+      min_open_s: 300.0
+      min_delta_pct: 1.0
+
+  - id: R5
+    type: stuck_replay
+    weight: 30
+    description: >-
+      Zero moisture variance across 8 readings while environment dynamic
+      (rain or valve open): replayed or frozen feed.
+    params:
+      min_readings: 8
+      dynamic_rain_gt: 10.0
+
+  - id: R6
+    type: corroboration
+    weight: -10
+    description: >-
+      Rainfall and soil moisture mutually consistent (independent sensors
+      agree): trust bonus.
+    params:
+      rain_gt: 10.0
+      moisture_gt: 50.0

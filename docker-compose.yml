@@ -1,0 +1,53 @@
+services:
+  crop-gateway:
+    build: ./gateway
+    container_name: crop_gateway
+    ports:
+      - "8000:8000"
+    environment:
+      - CROP_RULES_FILE=/etc/crop/rules.yaml
+    volumes:
+      - ./gateway/rules.yaml:/etc/crop/rules.yaml:ro
+    networks:
+      - crop_agri_net
+    depends_on:
+      - soil-sensor
+      - weather-station
+      - irrigation-valve
+
+  soil-sensor:
+    build: ./devices
+    container_name: crop_soil_sensor
+    environment:
+      - DEVICE_TYPE=soil_sensor
+      - SPOOF=true
+    ports:
+      - "8081:8080"
+    networks:
+      - crop_agri_net
+
+  weather-station:
+    build: ./devices
+    container_name: crop_weather_station
+    environment:
+      - DEVICE_TYPE=weather_station
+      - SPOOF=true
+    ports:
+      - "8082:8080"
+    networks:
+      - crop_agri_net
+
+  irrigation-valve:
+    build: ./devices
+    container_name: crop_irrigation_valve
+    environment:
+      - DEVICE_TYPE=irrigation_valve
+      - SPOOF=true
+    ports:
+      - "8083:8080"
+    networks:
+      - crop_agri_net
+
+networks:
+  crop_agri_net:
+    driver: bridge

@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CROP // IoT Integrity Terminal v2.3.0</title>
+    <style>
+      :root {
+        --bg: #0b0f14;
+        --panel: #131a22;
+        --border: #233040;
+        --text: #e6edf3;
+        --accent: #3fb950;
+        --warn: #f85149;
+        --info: #58a6ff;
+        --dim: #7d8590;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "JetBrains Mono", "Fira Code", "Courier New", monospace;
+        margin: 0;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 16px;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 1.5rem;
+        color: var(--accent);
+        letter-spacing: 1px;
+      }
+      .pills {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .pill {
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        border: 1px solid var(--border);
+      }
+      .pill.ok {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .pill.warn {
+        border-color: var(--warn);
+        color: var(--warn);
+        background: rgba(248, 81, 73, 0.15);
+        animation: pulse 2s infinite;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+        gap: 24px;
+      }
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .card h2 {
+        margin: 0;
+        font-size: 1.1rem;
+        color: var(--info);
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .card .subtitle {
+        font-size: 0.8rem;
+        color: var(--dim);
+        margin-top: -10px;
+      }
+
+      .metric {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.95rem;
+      }
+      .metric .val {
+        font-weight: bold;
+      }
+      .metric .val.good {
+        color: var(--accent);
+      }
+      .metric .val.bad {
+        color: var(--warn);
+      }
+      .metric .val.warn {
+        color: #d29922;
+      }
+
+      .big-num {
+        font-size: 3.5rem;
+        font-weight: bold;
+        text-align: center;
+        margin: 10px 0;
+        line-height: 1;
+      }
+
+      button {
+        background: transparent;
+        color: var(--info);
+        border: 1px solid var(--info);
+        padding: 10px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-family: inherit;
+        font-weight: bold;
+        transition: all 0.2s;
+        width: 100%;
+        margin-top: 10px;
+      }
+      button:hover {
+        background: var(--info);
+        color: var(--bg);
+      }
+      button.danger {
+        color: var(--warn);
+        border-color: var(--warn);
+      }
+      button.danger:hover {
+        background: var(--warn);
+        color: var(--bg);
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .alert-box {
+        background: rgba(248, 81, 73, 0.15);
+        border: 1px solid var(--warn);
+        color: var(--warn);
+        padding: 12px;
+        border-radius: 4px;
+        text-align: center;
+        font-weight: bold;
+        display: none;
+      }
+      .alert-box.active {
+        display: block;
+        animation: pulse 1.5s infinite;
+      }
+      @keyframes pulse {
+        0% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.6;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        background: var(--border);
+        color: var(--text);
+      }
+      .badge.edge {
+        background: rgba(88, 166, 255, 0.2);
+        color: var(--info);
+        border: 1px solid var(--info);
+      }
+      .badge.attack {
+        background: rgba(248, 81, 73, 0.2);
+        color: var(--warn);
+        border: 1px solid var(--warn);
+        margin-left: 8px;
+      }
+
+      .chart {
+        display: flex;
+        align-items: flex-end;
+        gap: 2px;
+        height: 130px;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .chart .bar {
+        flex: 1;
+        min-height: 2px;
+        background: var(--accent);
+        border-radius: 2px 2px 0 0;
+        transition: height 0.3s ease;
+      }
+      .chart .bar.bad {
+        background: var(--warn);
+      }
+      .chart-legend {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.7rem;
+        color: var(--dim);
+      }
+      .chart-legend .dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 2px;
+        margin-right: 4px;
+      }
+      .chart-legend .dot.g {
+        background: var(--accent);
+      }
+      .chart-legend .dot.r {
+        background: var(--warn);
+      }
+
+      .evidence-box {
+        background: rgba(248, 81, 73, 0.05);
+        border-left: 3px solid var(--warn);
+        padding: 8px 12px;
+        border-radius: 2px;
+        font-size: 0.85rem;
+        margin-bottom: 6px;
+      }
+      .evidence-box strong {
+        color: var(--warn);
+      }
+
+      .pass-box {
+        background: rgba(63, 185, 80, 0.05);
+        border-left: 3px solid var(--accent);
+        padding: 8px 12px;
+        border-radius: 2px;
+        font-size: 0.85rem;
+        color: var(--accent);
+      }
+
+      footer {
+        text-align: center;
+        color: var(--dim);
+        font-size: 0.8rem;
+        border-top: 1px solid var(--border);
+        padding-top: 16px;
+        margin-top: 20px;
+        line-height: 1.5;
+      }
+      footer a {
+        color: var(--info);
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>CROP // IoT Integrity Terminal</h1>
+      <div class="pills">
+        <div class="pill ok">System Online</div>
+        <div id="sys-threat" class="pill ok">No Active Threat</div>
+      </div>
+    </header>
+
+    <div class="grid">
+      <!-- MODULE 01: LAYER 1 -->
+      <div class="card">
+        <h2>Module 01 · Device Risk Assessment</h2>
+        <div class="subtitle">Layer 1 — Nmap scan + NVD CVE mapping</div>
+        <div id="l1-results">
+          <div class="metric">
+            <span>Press Rescan to query Nmap + NVD API...</span>
+          </div>
+        </div>
+        <button id="l1-btn" onclick="scanL1()">Rescan Network</button>
+      </div>
+
+      <!-- MODULE 02: LAYER 2 -->
+      <div class="card">
+        <h2>
+          Module 02 · Network Traffic Analysis
+          <span>
+            <span id="l2-source" class="badge">Loading...</span>
+            <span
+              id="l2-label"
+              class="badge attack"
+              style="display: none"
+            ></span>
+          </span>
+        </h2>
+        <div class="subtitle">
+          Layer 2 — Edge-IIoTset trace replay (500 PPS threshold)
+        </div>
+
+        <div id="l2-chart" class="chart"></div>
+        <div class="chart-legend">
+          <span><span class="dot g"></span>&le; 500 pps (normal)</span>
+          <span><span class="dot r"></span>&gt; 500 pps (flood)</span>
+          <span id="l2-wincount">0 windows</span>
+        </div>
+
+        <div class="metric">
+          <span>Current Traffic:</span>
+          <span id="l2-pps" class="val good">— packets/sec</span>
+        </div>
+
+        <div id="l2-alert" class="alert-box">⚠ DDoS SPIKE DETECTED</div>
+      </div>
+
+      <!-- MODULE 03: LAYER 3 -->
+      <div class="card">
+        <h2>Module 03 · Sensor Trust & Integrity</h2>
+        <div class="subtitle">
+          Layer 3 — Cyber-Physical Data Integrity Engine (6 Rules)
+        </div>
+
+        <div id="l3-score" class="big-num good">—</div>
+        <div class="metric">
+          <span>Trust Status:</span><span id="l3-status" class="val">—</span>
+        </div>
+        <div class="metric">
+          <span>Soil Moisture:</span><span id="l3-soil" class="val">—</span>
+        </div>
+        <div class="metric">
+          <span>Rainfall:</span><span id="l3-rain" class="val">—</span>
+        </div>
+        <div class="metric">
+          <span>Action Taken:</span
+          ><span
+            id="l3-action"
+            class="val"
+            style="text-align: right; max-width: 60%"
+            >—</span
+          >
+        </div>
+
+        <div
+          style="
+            margin-top: 12px;
+            border-top: 1px solid var(--border);
+            padding-top: 12px;
+          "
+        >
+          <div
+            style="
+              font-size: 0.85rem;
+              color: var(--dim);
+              margin-bottom: 8px;
+              font-weight: bold;
+            "
+          >
+            Engine Evidence (Explainability):
+          </div>
+          <div
+            id="l3-rules-list"
+            style="
+              display: flex;
+              flex-direction: column;
+              gap: 6px;
+              min-height: 40px;
+            "
+          >
+            <!-- JS populates -->
+          </div>
+        </div>
+
+        <button id="spoof-btn" onclick="toggleSpoof()">
+          Simulate Spoof Attack
+        </button>
+      </div>
+    </div>
+
+    <footer>
+      <strong>CROP v2.4.0</strong> · Docker testbed <code>crop_agri_net</code> ·
+      Live data from FastAPI gateway (:8000)<br />
+      <span id="footer-prov">Loading Layer 2 Provenance...</span>
+    </footer>
+
+    <script>
+      const API = window.location.origin;
+      const PPS_WINDOW = [];
+      const WINDOW_MAX = 40;
+
+      function renderChart(thresh) {
+        const chart = document.getElementById("l2-chart");
+        const maxVal = Math.max(...PPS_WINDOW.map((w) => w.pps), thresh, 100);
+        chart.innerHTML = PPS_WINDOW.map((w) => {
+          const h = Math.max(2, Math.round((w.pps / maxVal) * 100));
+          return `<div class="bar${w.pps > thresh ? " bad" : ""}" style="height:${h}%" title="${w.pps} pps"></div>`;
+        }).join("");
+        document.getElementById("l2-wincount").innerText =
+          PPS_WINDOW.length + " windows";
+      }
+
+      async function fetchJSON(url) {
+        try {
+          const r = await fetch(API + url);
+          return await r.json();
+        } catch (e) {
+          console.error("Fetch failed:", url, e);
+          return null;
+        }
+      }
+
+      // LAYER 2 POLLING
+      async function updateL2() {
+        const data = await fetchJSON("/layer2/network-alerts");
+        if (!data) return;
+
+        const pps = data.data.current_pps;
+        const thresh = data.data.threshold;
+        const status = data.status;
+        const source = data.source;
+        const label = data.data.attack_label;
+
+        document.getElementById("l2-pps").innerText = pps + " pps";
+        document.getElementById("l2-pps").className =
+          pps > thresh ? "val bad" : "val good";
+
+        PPS_WINDOW.push({ pps: pps });
+        if (PPS_WINDOW.length > WINDOW_MAX) PPS_WINDOW.shift();
+        renderChart(thresh);
+
+        const srcBadge = document.getElementById("l2-source");
+        srcBadge.innerText = source;
+        srcBadge.className = source === "Edge-IIoTset" ? "badge edge" : "badge";
+
+        const lblBadge = document.getElementById("l2-label");
+        if (label && label !== "Normal") {
+          lblBadge.innerText = label;
+          lblBadge.style.display = "inline-block";
+        } else {
+          lblBadge.style.display = "none";
+        }
+
+        const alertBox = document.getElementById("l2-alert");
+        if (status === "ALERT") {
+          alertBox.classList.add("active");
+          alertBox.innerText = `⚠ ${data.data.alert_type} — ${label} traffic window flagged`;
+          document.getElementById("sys-threat").innerText =
+            "CRITICAL THREAT ACTIVE";
+          document.getElementById("sys-threat").className = "pill warn";
+        } else {
+          alertBox.classList.remove("active");
+          document.getElementById("sys-threat").innerText = "No Active Threat";
+          document.getElementById("sys-threat").className = "pill ok";
+        }
+      }
+
+      // LAYER 3 POLLING
+      async function updateL3() {
+        const data = await fetchJSON("/layer3/trust-evaluation");
+        if (!data) return;
+
+        const score = data.trust_score;
+        const status = data.status;
+
+        document.getElementById("l3-score").innerText = score;
+        document.getElementById("l3-score").className =
+          "big-num " +
+          (status === "SPOOFED"
+            ? "bad"
+            : status === "DEGRADED"
+              ? "warn"
+              : "good");
+
+        document.getElementById("l3-status").innerText = status;
+        document.getElementById("l3-status").className =
+          "val " +
+          (status === "SPOOFED"
+            ? "bad"
+            : status === "DEGRADED"
+              ? "warn"
+              : "good");
+
+        const soil =
+          data.soil_sensor["moisture_pct"] !== undefined
+            ? data.soil_sensor["moisture_pct"]
+            : data.soil_sensor["moisture_pct "];
+        const rain =
+          data.weather_station["rain_mm_per_hr"] !== undefined
+            ? data.weather_station["rain_mm_per_hr"]
+            : data.weather_station["rain_mm_per_hr "];
+
+        document.getElementById("l3-soil").innerText =
+          (soil !== undefined ? soil : "?") + "%";
+        document.getElementById("l3-rain").innerText =
+          (rain !== undefined ? rain : "?") + " mm/hr";
+        document.getElementById("l3-action").innerText =
+          data.action_taken || "None";
+
+        // EXPLAINABILITY EVIDENCE PANEL
+        const rulesList = document.getElementById("l3-rules-list");
+        const firedRules = (data.evidence || []).filter((e) => e.fired);
+
+        if (firedRules.length === 0) {
+          rulesList.innerHTML = `<div class="pass-box">✓ All physical plausibility checks passed. Data is trusted.</div>`;
+        } else {
+          let html = "";
+          for (const ev of firedRules) {
+            html += `<div class="evidence-box">
+                <strong>${ev.rule_id} (${ev.name}):</strong> 
+                <span>${ev.explanation}</span>
+            </div>`;
+          }
+          rulesList.innerHTML = html;
+        }
+      }
+
+      // LAYER 1 SCANNING
+      async function scanL1() {
+        const btn = document.getElementById("l1-btn");
+        btn.disabled = true;
+        btn.innerText = "Scanning Nmap + NVD...";
+
+        const devices = ["soil_sensor", "weather_station", "irrigation_valve"];
+        let html = "";
+        for (const dev of devices) {
+          const d = await fetchJSON(`/layer1/scan/${dev}`);
+          if (d) {
+            const color =
+              d.status === "CRITICAL"
+                ? "bad"
+                : d.status === "MEDIUM"
+                  ? "warn"
+                  : "good";
+            html += `
+                <div class="metric"><span>${d.device.replace("_", " ")}</span><span class="val ${color}">${d.status} (${d.risk_score})</span></div>
+                <div class="metric" style="font-size:0.8rem;color:var(--dim)"><span>Ports: [${d.open_ports.join(", ")}]</span><span>CVEs: ${d.nvd_keyword_cves}</span></div>
+            `;
+          }
+        }
+        document.getElementById("l1-results").innerHTML =
+          html || '<div class="metric"><span>Scan failed</span></div>';
+
+        btn.disabled = false;
+        btn.innerText = "Rescan Network";
+      }
+
+      // SPOOF TOGGLE
+      async function toggleSpoof() {
+        const btn = document.getElementById("spoof-btn");
+        const isSpoof = btn.innerText.includes("Stop");
+        btn.disabled = true;
+        btn.innerText = "Toggling...";
+
+        await fetch(API + "/layer3/toggle-spoof", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ spoof: !isSpoof }),
+        });
+
+        await updateSpoofState();
+        await updateL3();
+        btn.disabled = false;
+      }
+
+      async function updateSpoofState() {
+        const data = await fetchJSON("/system/spoof-state");
+        const btn = document.getElementById("spoof-btn");
+        if (!data) return;
+
+        const isSpoof =
+          data["spoof_mode"] !== undefined
+            ? data["spoof_mode"]
+            : data["spoof_mode "];
+        if (isSpoof) {
+          btn.innerText = "Stop Spoof Attack";
+          btn.className = "danger";
+        } else {
+          btn.innerText = "Simulate Spoof Attack";
+          btn.className = "";
+        }
+      }
+
+      // PROVENANCE LOAD
+      async function loadProvenance() {
+        const data = await fetchJSON("/layer2/provenance");
+        if (data && data.citation) {
+          document.getElementById("footer-prov").innerHTML = `
+            <strong>Layer 2 Provenance:</strong> ${data.dataset}<br>
+            <span style="font-size:0.75rem">${data.citation}</span>
+        `;
+        }
+      }
+
+      // INIT INTERVALS
+      setInterval(updateL2, 2000);
+      setInterval(updateL3, 3000);
+      setInterval(updateSpoofState, 5000);
+
+      updateL2();
+      updateL3();
+      updateSpoofState();
+      loadProvenance();
+    </script>
+  </body>
+</html>

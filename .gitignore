@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Raw captures (multi-GB; see datasets/DATASETS.md for download instructions)
+datasets/raw/
+
+# Internal project-context document (not for public release)
+CROP_CC.md
+
+*.log
